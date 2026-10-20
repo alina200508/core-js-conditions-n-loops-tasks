@@ -315,8 +315,23 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  for (let i = 1; i < arr.length; i += 1) {
+    let right = 0;
+    let left = 0;
+    for (let j = 1; j < arr.length; j += 1) {
+      if (i + j < arr.length) {
+        right += arr[i + j];
+      }
+      if (i - j >= 0) {
+        left += arr[i - j];
+      }
+    }
+    if (right === left) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -340,8 +355,44 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const matrix = [];
+  for (let i = 0; i < size; i += 1) {
+    matrix[i] = [0];
+  }
+  let top = 0;
+  let bottom = size - 1;
+  let right = size - 1;
+  let left = 0;
+  let num = 1;
+  while (top <= bottom && left <= right) {
+    for (let i = left; i <= right; i += 1) {
+      matrix[top][i] = num;
+      num += 1;
+    }
+    top += 1;
+    for (let i = top; i <= bottom; i += 1) {
+      matrix[i][right] = num;
+      num += 1;
+    }
+    right -= 1;
+    if (top <= bottom) {
+      for (let i = right; i >= left; i -= 1) {
+        matrix[bottom][i] = num;
+        num += 1;
+      }
+      bottom -= 1;
+    }
+
+    if (left <= right) {
+      for (let i = bottom; i >= top; i -= 1) {
+        matrix[i][left] = num;
+        num += 1;
+      }
+      left += 1;
+    }
+  }
+  return matrix;
 }
 
 /**
@@ -359,8 +410,23 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const matrix1 = matrix;
+  for (let i = 0; i < matrix.length; i += 1) {
+    for (let j = i + 1; j < matrix.length; j += 1) {
+      const temp = matrix1[i][j];
+      matrix1[i][j] = matrix1[j][i];
+      matrix1[j][i] = temp;
+    }
+  }
+  for (let i = 0; i < matrix.length; i += 1) {
+    for (let j = 0; j < matrix[i].length / 2; j += 1) {
+      const temp = matrix[i][j];
+      matrix1[i][j] = matrix1[i][matrix[i].length - j - 1];
+      matrix1[i][matrix[i].length - j - 1] = temp;
+    }
+  }
+  return matrix;
 }
 
 /**
@@ -377,8 +443,18 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const array = arr;
+  for (let i = 0; i < array.length - 1; i += 1) {
+    for (let j = 0; j < array.length - i - 1; j += 1) {
+      if (array[j] > array[j + 1]) {
+        const temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
+    }
+  }
+  return array;
 }
 
 /**
