@@ -443,18 +443,46 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(arr) {
-  const array = arr;
-  for (let i = 0; i < array.length - 1; i += 1) {
-    for (let j = 0; j < array.length - i - 1; j += 1) {
-      if (array[j] > array[j + 1]) {
-        const temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
+function sortByAsc(arr1) {
+  const arr = arr1;
+  function quickSort(left, right) {
+    let i = left;
+    let j = right;
+    const pivot = arr[Math.floor((left + right) / 2)];
+
+    while (i <= j) {
+      while (arr[i] < pivot) {
+        i += 1;
+      }
+
+      while (arr[j] > pivot) {
+        j -= 1;
+      }
+
+      if (i <= j) {
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+
+        i += 1;
+        j -= 1;
       }
     }
+
+    if (left < j) {
+      quickSort(left, j);
+    }
+
+    if (i < right) {
+      quickSort(i, right);
+    }
   }
-  return array;
+
+  if (arr.length > 1) {
+    quickSort(0, arr.length - 1);
+  }
+
+  return arr;
 }
 
 /**
@@ -474,8 +502,81 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+
+function shuffleChar(str1, iterations) {
+  let i = 0;
+  let str = str1;
+  const n = str.length;
+
+  if (n < 2 || iterations === 0) {
+    return str;
+  }
+
+  function findIndex(j) {
+    if (j % 2 === 0) {
+      return j / 2;
+    }
+    return Math.ceil(n / 2) + Math.floor(j / 2);
+  }
+
+  function gcd(x, y) {
+    let a = x;
+    let b = y;
+
+    while (b !== 0) {
+      const temp = b;
+      b = a % b;
+      a = temp;
+    }
+
+    return a;
+  }
+
+  function lcm(a, b) {
+    return (a / gcd(a, b)) * b;
+  }
+
+  const visited = [];
+
+  for (let index = 0; index < n; index += 1) {
+    visited[index] = false;
+  }
+  let period = 1;
+
+  for (let index = 0; index < n; index += 1) {
+    if (!visited[index]) {
+      let current = index;
+      let cycleLength = 0;
+
+      do {
+        visited[current] = true;
+        current = findIndex(current);
+        cycleLength += 1;
+      } while (current !== index);
+
+      period = lcm(period, cycleLength);
+    }
+  }
+
+  const effectiveIterations = iterations % period;
+
+  while (i < effectiveIterations) {
+    let oddIndex = '';
+    let evenIndex = '';
+
+    for (let j = 1; j < n; j += 2) {
+      oddIndex += str[j];
+    }
+
+    for (let j = 0; j < n; j += 2) {
+      evenIndex += str[j];
+    }
+
+    str = evenIndex + oddIndex;
+    i += 1;
+  }
+
+  return str;
 }
 
 /**
@@ -496,8 +597,61 @@ function shuffleChar(/* str, iterations */) {
  * 321321   => 322113
  *
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let temp = number;
+  let length = 0;
+
+  while (temp > 0) {
+    length += 1;
+    temp = Math.floor(temp / 10);
+  }
+
+  const digits = [];
+  temp = number;
+
+  for (let i = length - 1; i >= 0; i -= 1) {
+    digits[i] = temp % 10;
+    temp = Math.floor(temp / 10);
+  }
+
+  let i = length - 2;
+
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i < 0) {
+    return number;
+  }
+
+  let j = length - 1;
+
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  const swap = digits[i];
+  digits[i] = digits[j];
+  digits[j] = swap;
+
+  let left = i + 1;
+  let right = length - 1;
+
+  while (left < right) {
+    const digit = digits[left];
+    digits[left] = digits[right];
+    digits[right] = digit;
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+
+  for (let k = 0; k < length; k += 1) {
+    result = result * 10 + digits[k];
+  }
+
+  return result;
 }
 
 module.exports = {
